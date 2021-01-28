@@ -10,24 +10,25 @@
 import requests
 import json
 
-date = '2019-03-11'
+dates = ['2019-03-11', '2006-12-29', '2012-12-28', '2020-02-22', '2007-07-21' ,'2020-12-29', '2020-04-27', '2020-07-21']
 api_key = '...'
 url = 'https://api.nasa.gov/planetary/apod?'
 
-response = requests.get(f'{url}date={date}&api_key={api_key}')
-if response.status_code == 200:
-    print('OK')
-else:
-    print(response.status_code)
-    print(response.content)
+for date in dates:
+    response = requests.get(f'{url}date={date}&api_key={api_key}')
+    if response.status_code == 200:
+        print('OK')
+    else:
+        print(response.status_code)
+        print(response.content)
 
-r = response.json()
+    r = response.json()
 
-print(r)
+    print(r)
 
-filename = f'{date}_nasa.json'
-with open(filename, 'w') as f:
-    # преобразуем в json и сохраняем в файл
-    json.dump(r, f)
+    filename = f'{date}_nasa.json'
+    with open(filename, 'w') as f:
+        # преобразуем в json и сохраняем в файл
+        json.dump(r, f)
 
-print(f"Ссылка на фото {r.get('hdurl')}")
+    print(f"Ссылка на фото {r.get('hdurl')}")

@@ -140,7 +140,7 @@ def parser_superjob(name_vacancy, page):
 
         vacancy_company_info = vacancy.find('span', {'class': '_3mfro _3Fsn4 f-test-text-vacancy-item-company-name _9fXTd _2JVkc _2VHxz _15msI'})
         vacancy_company_name = vacancy_company_info.text
-        vacancy_company_link = vacancy_company_info.next.attrs['href']
+        vacancy_company_link = url + vacancy_company_info.next.attrs['href']
 
         # были ошибки на сайте для этого вставляла блок ниже
         # try:

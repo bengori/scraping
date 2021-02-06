@@ -13,16 +13,16 @@ def salary(salary_str: str):
     salary_list = salary_str.split(' ')
     salary_currency = salary_list[-1]
     if salary_list[0] == 'от':
-        min_salary = salary_list[1]
-        max_salary = 'не указана'
+        min_salary = int(salary_list[1])
+        max_salary = float('nan')
     elif salary_list[0] == 'до':
-        max_salary = salary_list[1]
-        min_salary = 'не указана'
+        max_salary = int(salary_list[1])
+        min_salary = float('nan')
     else:
-        min_salary = salary_list[0]
-        max_salary = salary_list[1]
+        min_salary = int(salary_list[0])
+        max_salary = int(salary_list[1])
 
-    return int(min_salary), int(max_salary), salary_currency
+    return min_salary, max_salary, salary_currency
 
 
 def amount_page_hh(vacancy):
@@ -110,9 +110,10 @@ def parser_hh(name_vacancy, page):
         try:
             vacancy_salary_info = vacancy_salary_info.text
             vacancy_salary_info = vacancy_salary_info.replace(u'\xa0', '')
-            min_salary, max_salary, salary_currency = salary(vacancy_salary_info)
         except:
             min_salary, max_salary, salary_currency = (None, None, None)
+        else:
+            min_salary, max_salary, salary_currency = salary(vacancy_salary_info)
 
         vacancy_data['name'] = vacancy_name
         vacancy_data['link_vacancy'] = vacancy_link

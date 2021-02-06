@@ -124,6 +124,8 @@ def parser_hh(name_vacancy, page):
         vacancies.append(vacancy_data)
 
     pprint(vacancies)
+    return vacancies
+
 
 def parser_superjob(name_vacancy, page):
     url = 'https://russia.superjob.ru'
@@ -216,7 +218,9 @@ def parser_superjob(name_vacancy, page):
         vacancy_data['salary_currency'] = salary_currency
         vacancies.append(vacancy_data)
 
-        pprint(vacancies)
+    pprint(vacancies)
+    return vacancies
+
 
 if __name__ == "__main__":
     text = input('Профессия, должность или компания:\n >>>')
@@ -239,9 +243,10 @@ if __name__ == "__main__":
         except ValueError as e:
             print(f'{e} некорректные данные')
 
-
+    vacancies_hh = []
     for page in pages:
-        vacancies_hh = parser_hh(text, page)
+        hh = parser_hh(text, page)
+        vacancies_hh.extend(hh)
 
     # по superjob вывожу сразу все вакансии
     try:
@@ -249,10 +254,14 @@ if __name__ == "__main__":
     except AttributeError:
         total_pages_superjob = 1
 
-    for page in range(0, total_pages_superjob):
-        vacancies_sj = parser_superjob(text, 1)
+    vacancies_sj = []
+    for i in range(0, total_pages_superjob):
+        sj = parser_superjob(text, 1)
+        vacancies_sj.extend(sj)
 
     total_vacancy_base = []
-    pass  # здесь должен быть код наполнения\слияния двух баз(superjob и hh)
+    total_vacancy_base.extend(vacancies_hh)
+    total_vacancy_base.extend(vacancies_sj)
+
     df = pd.DataFrame(total_vacancy_base)
-    df.to_csv(r'E:\projects\scraping\scraping\homework\les2\vacancy.csv', index=False)
+    df.to_csv(r'E:\projects\scraping\scraping\homework\les2\vacancy.csv', index=True)

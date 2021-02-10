@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup as bs
 import requests
 from pprint import pprint
 import pandas as pd
-
+import re
 
 # https://hh.ru/search/vacancy?L_is_autosearch=false&clusters=true&enable_snippets=true&text=data+engineer&page=39
 # https://hh.ru/search/vacancy?L_is_autosearch=false&clusters=true&enable_snippets=true&text=data+engineer&page=0
@@ -14,10 +14,10 @@ def salary(salary_str: str):
     salary_currency = salary_list[-1]
     if salary_list[0] == 'от':
         min_salary = int(salary_list[1])
-        max_salary = float('nan')
+        max_salary = None
     elif salary_list[0] == 'до':
         max_salary = int(salary_list[1])
-        min_salary = float('nan')
+        min_salary = None
     else:
         min_salary = int(salary_list[0])
         max_salary = int(salary_list[1])
@@ -150,7 +150,7 @@ def parser_superjob(name_vacancy, page):
     soup = bs(response.text, "html.parser")
 
     vacancies_block = soup.find('div', {'class': '_1Ttd8 _2CsQi'})
-    vacancies_list = vacancies_block.find_all('div', {'class': 'iJCa5 f-test-vacancy-item _1fma_ undefined _2nteL'})
+    vacancies_list = vacancies_block.find_all('div', {'class': re.compile('^iJCa5 f')})
     # print(len(vacancies_list))
     vacancies = []
     for vacancy in vacancies_list:
@@ -164,24 +164,17 @@ def parser_superjob(name_vacancy, page):
         except:
             vacancy_salary_block_2 = ''
 
-        vacancy_company_info = vacancy.find('span', {
-            'class': '_3mfro _3Fsn4 f-test-text-vacancy-item-company-name _9fXTd _2JVkc _2VHxz _15msI'})
-        vacancy_company_name = vacancy_company_info.text
-        vacancy_company_link = url + vacancy_company_info.next.attrs['href']
+        vacancy_company_info = vacancy.find('span', {'class': re.compile('^_3mfro _3Fsn4')})
+        # vacancy_company_name = vacancy_company_info.text
+        # vacancy_company_link = url + vacancy_company_info.next.attrs['href']
 
-        # были ошибки на сайте для этого вставляла блок ниже
-        # try:
-        #    vacancy_company_name = vacancy_company_info.text
-        # except AttributeError as e:
-        #    vacancy_company_name = 'нет данных'
-        # else:
-        #    continue
-        # try:
-        #    vacancy_company_link = vacancy_company_info.next.attrs['href']
-        # except AttributeError as e:
-        #    vacancy_company_link = 'нет данных'
-        # else:
-        #    continue
+        # были ошибки на сайте (нет имени работодателя) для этого вставляла блок ниже
+        try:
+            vacancy_company_name = vacancy_company_info.text
+            vacancy_company_link = url + vacancy_company_info.next.attrs['href']
+        except AttributeError as e:
+            vacancy_company_name = 'нет данных'
+            vacancy_company_link = 'нет данных'
 
         vacancy_salary_block_1 = vacancy_salary_block_1.replace(u'\xa0', '').replace('—', ' ')
         salary_list = vacancy_salary_block_1.split(' ')
@@ -197,7 +190,7 @@ def parser_superjob(name_vacancy, page):
                 max_salary = int(salary_list[1][:-4])
                 salary_currency = f'{salary_list[-1][-4:]}, периодичность {vacancy_salary_block_2}'
         else:
-            if salary_list[0][:1] == 'от':
+            if salary_list[0][:2] == 'от':
                 min_salary = int(salary_list[0][2:-4])
                 max_salary = None
                 salary_currency = f'{salary_list[-1][-4:]}, периодичность {vacancy_salary_block_2}'
@@ -256,8 +249,8 @@ if __name__ == "__main__":
         total_pages_superjob = 1
 
     vacancies_sj = []
-    for i in range(0, total_pages_superjob):
-        sj = parser_superjob(text, 1)
+    for page in range(1, total_pages_superjob + 1):
+        sj = parser_superjob(text, page)
         vacancies_sj.extend(sj)
 
     total_vacancy_base = []

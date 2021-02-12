@@ -238,20 +238,20 @@ def parser_superjob(name_vacancy, page):
             else:
                 min_salary = int(salary_list[0])
                 max_salary = int(salary_list[1][:-4])
-                salary_currency = f'{salary_list[-1][-4:]}, периодичность {vacancy_salary_block_2}'
+                salary_currency = f'{salary_list[-1][-4:]}'
         else:
             if salary_list[0][:2] == 'от':
                 min_salary = int(salary_list[0][2:-4])
                 max_salary = None
-                salary_currency = f'{salary_list[-1][-4:]}, периодичность {vacancy_salary_block_2}'
+                salary_currency = f'{salary_list[-1][-4:]}'
             elif salary_list[0][:2] == 'до':
                 max_salary = int(salary_list[0][2:-4])
                 min_salary = None
-                salary_currency = f'{salary_list[-1][-4:]}, периодичность {vacancy_salary_block_2}'
+                salary_currency = f'{salary_list[-1][-4:]}'
             else:
                 max_salary = int(salary_list[0][0:-4])
                 min_salary = None
-                salary_currency = f'{salary_list[-1][-4:]}, периодичность {vacancy_salary_block_2}'
+                salary_currency = f'{salary_list[-1][-4:]}'
 
         vacancy_data['name'] = vacancy_name
         vacancy_data['link_vacancy'] = vacancy_link

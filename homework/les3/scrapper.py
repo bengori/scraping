@@ -156,6 +156,8 @@ def parser_hh(name_vacancy, page):
         vacancy_data = {}
         vacancy_name = vacancy.find('a').text
         vacancy_link = vacancy.find('a').attrs['href']
+        vacancy_id = vacancy_link.replace('https://ekaterinburg.hh.ru/vacancy/','').replace('?', ' ').split(' ')
+        vacancy_id = f'{vacancy_id[0]}_hh'
         vacancy_company_info = vacancy.find('div', {'class': 'vacancy-serp-item__meta-info-company'})
         vacancy_company_name = vacancy_company_info.text
         vacancy_company_link = url + vacancy_company_info.next.attrs['href']
@@ -171,6 +173,7 @@ def parser_hh(name_vacancy, page):
             min_salary, max_salary, salary_currency = salary_hh(vacancy_salary_info)
 
         vacancy_data['name'] = vacancy_name
+        vacancy_data['vacancy_id'] = vacancy_id
         vacancy_data['link_vacancy'] = vacancy_link
         vacancy_data['name_company'] = vacancy_company_name
         vacancy_data['link_company'] = vacancy_company_link
@@ -212,6 +215,8 @@ def parser_superjob(name_vacancy, page):
         vacancy_info = vacancy.find('div', {'class': '_3mfro PlM3e _2JVkc _3LJqf'})
         vacancy_name = vacancy_info.text
         vacancy_link = url + vacancy_info.next.attrs['href']
+        vacancy_id = vacancy_link.replace('.', ' ').replace('-', ' ').split(' ')
+        vacancy_id = f'{vacancy_id[-2]}_sj'
         vacancy_salary_block_1 = vacancy.find('span', {'class': '_3mfro _2Wp8I PlM3e _2JVkc _2VHxz'}).text
         try:
             vacancy_salary_block_2 = vacancy.find('span', {'class': '_3mfro PlM3e _2JVkc _2VHxz'}).text
@@ -253,7 +258,9 @@ def parser_superjob(name_vacancy, page):
                 min_salary = None
                 salary_currency = f'{salary_list[-1][-4:]}'
 
+
         vacancy_data['name'] = vacancy_name
+        vacancy_data['vacancy_id'] = vacancy_id
         vacancy_data['link_vacancy'] = vacancy_link
         vacancy_data['name_company'] = vacancy_company_name
         vacancy_data['link_company'] = vacancy_company_link

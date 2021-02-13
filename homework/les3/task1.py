@@ -3,7 +3,6 @@
 
 import scrapper
 from pymongo import MongoClient
-from pprint import pprint
 
 
 def vacancy_to_db(vacancy):
@@ -26,7 +25,7 @@ def vacancy_to_db(vacancy):
     try:
         amount_vacancies_hh = scrapper.amount_vacancies_hh(vacancy)
     except ValueError as e:
-        amount_vacancies = None
+        amount_vacancies_hh = None
         print(f'вакансии {vacancy} не найдены')
     else:
         print(f'Количество найденных вакансий {vacancy} на hh.ru - {amount_vacancies_hh}')
@@ -46,7 +45,7 @@ def vacancy_to_db(vacancy):
     try:
         amount_vacancies_superjob = scrapper.amount_vacancies_sj(vacancy)
     except ValueError as e:
-        amount_vacancies = None
+        amount_vacancies_superjob = None
         print(f'вакансии {vacancy} не найдены')
     else:
         print(f'Количество найденных вакансий {vacancy} на superjob - {amount_vacancies_superjob}')

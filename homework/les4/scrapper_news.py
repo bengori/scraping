@@ -2,6 +2,7 @@ from pprint import pprint
 import requests
 from lxml import html
 import datetime
+from pymongo import MongoClient
 
 my_headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
                             'Chrome/88.0.4324.150 Safari/537.36'}
@@ -24,7 +25,7 @@ def requests_lenta_news():
         date_news_info = root.xpath(".//div[@class = 'b-topic__info']/time/@datetime")
         date_news = date_news_info[0][:10].split('-')
         date_news = datetime.date(int(date_news[0]), int(date_news[1]), int(date_news[2])).strftime('%d.%m.%Y')
-
+        # либо date_news = datetime.date(int(date_news[0]), int(date_news[1]), int(date_news[2]))
         news['name_source'] = name_source
         news['name_news'] = name_news[0].replace(u'\xa0', ' ')
         news['link_news'] = link_news
@@ -72,6 +73,7 @@ def requests_mail_news():
     news_block2 = root.xpath("//ul[contains(@class, 'list list_type_square list_half js-module')]/li[position()>2]")
 
     base_news = []
+
     for item in news_block1:
         news = {}
         name_news = item.xpath(".//span[contains(@class, 'js-topnews__notification')]/text()")
@@ -83,7 +85,7 @@ def requests_mail_news():
             "//span[contains(@class, 'breadcrumbs__item')]//span[contains(@class, 'js-ago')]/@datetime")
         date_news = date_news_info[0][:10].split('-')
         date_news = datetime.date(int(date_news[0]), int(date_news[1]), int(date_news[2])).strftime('%d.%m.%Y')
-
+        # либо date_news = datetime.date(int(date_news[0]), int(date_news[1]), int(date_news[2]))
         news['name_source'] = name_source[0]
         news['name_news'] = name_news[0].replace(u'\xa0', ' ')
         news['link_news'] = link_news[0]
@@ -101,7 +103,7 @@ def requests_mail_news():
             "//span[contains(@class, 'breadcrumbs__item')]//span[contains(@class, 'js-ago')]/@datetime")
         date_news = date_news_info[0][:10].split('-')
         date_news = datetime.date(int(date_news[0]), int(date_news[1]), int(date_news[2])).strftime('%d.%m.%Y')
-
+        # либо date_news = datetime.date(int(date_news[0]), int(date_news[1]), int(date_news[2]))
         news['name_source'] = name_source[0]
         news['name_news'] = name_news[0].replace(u'\xa0', ' ')
         news['link_news'] = link_news[0]
@@ -118,3 +120,10 @@ if __name__ == "__main__":
     pprint(yandex_news)
     mail_news = requests_mail_news()
     pprint(mail_news)
+    # загружаем всю собранную информацию в БД
+    client = MongoClient('localhost', 27017)
+    db = client['my_database']
+    news = db.news
+    news.insert_many(lenta_news)
+    news.insert_many(yandex_news)
+    news.insert_many(mail_news)

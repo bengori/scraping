@@ -40,12 +40,16 @@ if block_hits_name == 'Хиты продаж':
     total = data_init_param_ul['ajaxContentLoad']['total']
 
     while True:
-        prev_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable(
-            (By.XPATH, "//div[contains(@class,'gallery-layout_products')][position()=1]//a[contains(@class, 'prev-btn')]")
-        )).click()
-        products = driver.find_elements_by_xpath("//ul[contains(@data-init-param, 'Хиты продаж')]/li")
-        if len(products) == total:
-            break
+        try:
+            prev_button = WebDriverWait(driver, 15).until(EC.element_to_be_clickable(
+                (By.XPATH, "//div[contains(@class,'gallery-layout_products')][position()=1]//a[contains(@class, 'prev-btn')]")
+            )).click()
+            products = driver.find_elements_by_xpath("//ul[contains(@data-init-param, 'Хиты продаж')]/li")
+            if len(products) == total:
+                break
+        except exceptions.ElementClickInterceptedException as e:
+            print(f'Error: {e}. Try again')
+            driver.quit()
 
     products_base = []
     time.sleep(2)

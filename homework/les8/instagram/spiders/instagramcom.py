@@ -13,7 +13,7 @@ class InstagramcomSpider(scrapy.Spider):
     allowed_domains = ['instagram.com']
     start_urls = ['https://www.instagram.com/']
     insta_login = 'cloudlesssky4u'
-    insta_pwd = '#PWD_INSTAGRAM_BROWSER:10:1616097966:AWVQANvPMxiEMZragSCsG7fktOUfNz+5Q8QgTJo8zGCJVhkA6n9CXIsEzoV9t/yyMiWx67c7iH62jxknA8ELSfyEq2nFFtHBQyvjG+3c/dimvPdLjkmjv2V/T5nVWptxPMPkC4QHzyikFw93'
+    insta_pwd = ''
     inst_login_link = 'https://www.instagram.com/accounts/login/ajax/'
     parse_user = ['montessori.ekb', 'uralsurfsysert']  # Пользователи, у которых собираем подписчиков и подписки. Список
 
